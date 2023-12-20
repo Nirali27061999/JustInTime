@@ -1,0 +1,398 @@
+body{
+font-family: "Segoe UI",-apple-system,BlinkMacSystemFont,Roboto,"Helvetica Neue",sans-serif;
+font-weight: 400;
+}
+
+.customControl .ms-Dropdown-title,
+.customControl .ms-TextField-fieldGroup {
+border: 1px solid #b3b3b3;
+height: 35px;
+line-height: 33px;
+border-radius: 3px;
+}
+.customArea .ms-TextField-fieldGroup {
+border: 1px solid #b3b3b3;
+border-radius: 3px;
+}
+.customTabView .ms-Pivot {
+border-bottom: 1px solid #ddd;
+}
+.customTabView .ms-Pivot .is-selected::before,
+.customControl .is-checked .ms-Toggle-background {
+background-color: #154f98
+}
+.customTabView .ms-Pivot .is-selected .ms-Pivot-text {
+color: #154f98;
+}
+.customControl .ms-Dropdown-label,
+.customControl .ms-Label {
+color: #154f98;
+}
+.commonTable td {
+border-top: 1px solid #dee2e6;
+}
+.calculatiopnTable {
+border-collapse: separate;
+border-spacing: 10px;
+
+}
+.calculatiopnTable th {
+border-right: 1px solid #ddd;
+}
+.calculatiopnTable td {
+border-right: 1px solid #ddd;
+}
+.commonTable th,
+.calculatiopnTable th {
+color: #154f98;
+text-align: left;
+}
+.commonTable th,
+.commonTable td,
+.calculatiopnTable td,
+.calculatiopnTable th {
+padding: 8px;
+}
+.customDatePicker {
+margin-top: 5px;
+}
+.buttonWrapper {
+text-align: right;
+padding: 15px 0;
+padding-top: 0 !important;
+}
+
+.buttonWrapper .ms-Button {
+background-color: #154f98;
+border-color: #154f98;
+padding: 6px 10px;
+margin-left: 15px;
+}
+.buttonWrapper .ms-Button i {
+font-size: 12px;
+}
+.vendorRemove {
+color: #154f98;
+cursor: pointer;
+border: 0;
+background: transparent;
+font-size: 18px;
+}
+.detailListPanel .ms-DetailsHeader-cellTitle {
+color: #154f98;
+}
+.customCalculationWrap {
+display: flex;
+align-items: center;
+}
+
+.table-responsive {
+overflow-x: auto;
+margin-left: 15em;
+}
+
+.customButton .ms-Button:hover {
+    background-color: #122032;
+    border-color: #122032;
+}
+
+.headerCol {
+    position: absolute;
+    width: 180px;
+    left: 0;
+    top: auto;
+    border-top-width: 1px;
+    margin-top: -1px;
+    font-size: 12px;
+    word-break: break-word;
+    padding-left: 25px !important;
+    font-weight: 600;
+    height: 30px;
+    line-height: 16px;
+}
+
+.formInput {
+    border: 1px solid #b7b7b7;
+    border-radius: 2px;
+}
+
+.headerCentre {
+    text-align: center;
+}
+.checkBox .ms-Checkbox {
+justify-content: center;
+}
+
+.checkBox .ms-Checkbox .ms-Checkbox-checkbox {
+border-color: #154f98;
+}
+
+.checkBox .ms-Checkbox.is-checked .ms-Checkbox-checkbox {
+background: #154f98;
+}
+
+.checkBox .ms-Checkbox:hover .ms-Checkbox-checkbox {
+background: #154f98;
+}
+
+.checkBox .ms-Checkbox:hover .ms-Checkbox-checkmark {
+color: #fff;
+}
+.filepickerButton{
+background-color: #154f98;
+}
+.yearPosition{
+text-align: center !important;
+min-width: 150px;
+}
+.supplyTable{
+width:100%;
+}
+
+.arrowWrapper {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+
+.arrowWrapper .ms-Button:hover .ms-Button-icon {
+color: #fff;
+}
+
+.nextArrow .ms-Button {
+background-color: #154f98;
+border-color: #154f98;
+}
+
+.nextArrow .ms-Button:hover {
+background-color: #122032;
+border-color: #122032;
+}
+
+.custpomNextArrow {
+text-align: right;
+margin-top: 20px;
+}
+.arrowsTab {
+display: flex;
+align-items: center;
+justify-content: space-between;
+}
+.loaderOverlap {
+position: absolute;
+text-align: center;
+top: 50%;
+left: 50%;
+transform: translate(-50%, -50%);
+}
+input:disabled{
+background-color: #c7c7c7;
+color: #5e5e5e;
+}
+.customLabelDate{
+display: inline-block;
+padding: 5px 0px;
+overflow-wrap: break-word;
+font-size: 14px;
+font-weight: 600;
+}
+.customDate{
+font-size: 14px;
+font-weight: 400;
+box-shadow: none;
+margin: 0px;
+background: none transparent;
+color: rgb(50, 49, 48);
+width: 100%;
+min-width: 0px;
+text-overflow: ellipsis;
+outline: 0px;
+border: 1px solid #b3b3b3;
+border-radius: 3px;
+height: 34px;
+line-height: 33px;
+padding: 0 8px;
+}
+:focus-visible {
+outline: 0;
+}
+.react-datepicker__input-container{
+display: flex !important;
+flex-direction: row;
+align-items: stretch;
+}
+.react-datepicker-wrapper{
+position: relative;
+}
+.calendarIcon i{
+position: absolute;
+right: 20px;
+top: 40px;
+font-size: 15px;
+color: #888;
+}
+.react-datepicker-popper[data-placement^=bottom] .react-datepicker__triangle{
+margin-left: -20px;
+}
+.customNumber input[type=number]{
+text-align: right;
+}
+.customNumber input[type=text]{
+text-align: right;
+
+}
+.customNumberWrapper{
+width: 100%;
+display: flex;
+flex-direction: row;
+align-items: stretch;
+position: relative;
+}
+.number-format{
+background: #fff;
+padding: 0px 8px;
+width: 100%;
+border: 1px solid #b3b3b3;
+border-radius: 3px;
+height: 33px;
+text-align: right;
+}
+.customNumberFormat{
+background: #fff;
+padding: 0px 8px;
+width: auto;
+border: 1px solid #b3b3b3;
+border-radius: 3px;
+height: 33px;
+text-align: right;
+}
+
+
+
+input::-webkit-outer-spin-button,
+input::-webkit-inner-spin-button {
+-webkit-appearance: none;
+margin: 0;
+}
+/* .customLoader{
+background-image: url('./Genuit-Animation.gif');
+background-repeat: no-repeat;
+} */
+
+.css-3fvcat{
+margin: 0 auto;
+/* background-image : url('./Genuit-Animation-White.gif'); */
+background-repeat: no-repeat;
+}
+.css-14hgwh ,.css-1fymig2{
+display:none
+}
+.customFile{
+display: block;
+}
+.urlWrapper{
+margin-top: 10px;
+}
+.vendor-table{
+overflow: auto;
+width: 100%;
+}
+.fileIcon i{
+color: #154f98;
+font-size: 18px;
+}
+.customLabel{
+display: flex;
+align-items: center;
+color: #154f98;
+}
+.customLabel i{
+margin-left: 5px;
+}
+.capexNumWrapper{
+margin-bottom: 15px;
+border-bottom: 3px solid #0078d4;
+padding: 11px;
+background: #d6dadf;
+display: flex;
+justify-content: space-between;
+
+}
+.capexNumWrapper h4{
+font-size: 20px;
+color: #154f98
+}
+.capexNumWrapper h4,.capexNumWrapper p{
+margin: 0;
+}
+.capexNumWrapper p{
+/* margin-top: 5px; */
+font-size: 14px;
+font-weight: 600;
+color: #000
+}
+.cashFlowErrorMsg{
+width: 175px;
+}
+input[class="number-format"]:focus{
+outline-style: solid;
+outline-color:#0078d4;
+outline-width: 2px;
+border-radius: 0;
+}
+input[class="customNumberFormat"]:focus{
+outline-style: solid;
+outline-color:#0078d4;
+outline-width: 2px;
+border-radius: 0;
+}
+.supplyTableWrapper{
+overflow: auto;
+width: 100%;
+}
+.CanvasZone > div {max-width:100% !important}
+.spanSpace{padding-right: 10px;position: relative;}
+.spanSpace::after{
+    position: absolute;
+    content:"";
+    border-left: 1px solid #000;
+    height: 100%;
+    top:0;
+    right:5px;
+}
+.spanSpace:last-child:after{
+    content: none;
+}
+.total-format{border-top: 2px solid;border-bottom: 2px solid;}
+/* .capexInfo{
+    width: 50%;
+} */
+.capexEmail,.capexName{
+    display: flex;
+    margin-top: 5px;
+}
+.customSpace{
+    width: 35%;
+    font-weight: bold;
+}
+.capexName p,.capexEmail p{
+    width: 80%;
+}
+
+@media screen and (max-width:767px){
+.customTabView .ms-Pivot{
+    display: flex;
+    flex-direction: column;
+}
+
+}
+
+@media screen and (max-width:576px){
+.backArrow button{padding: 6px 10px;min-width: 35px;}
+.customButton button{padding: 6px 2px;font-size:12px;margin-left: 10px;min-width: auto;}
+
+
+}
+.vendor-table .commonTable .customNumberFormat{
+width:85% !important
+}

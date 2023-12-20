@@ -1,0 +1,21 @@
+{
+  "@microsoft/generator-sharepoint": {
+    "plusBeta": false,
+    "isCreatingSolution": true,
+    "nodeVersion": "14.18.0",
+    "sdksVersions": {
+      "@microsoft/microsoft-graph-client": "3.0.2",
+      "@microsoft/teams-js": "2.4.1"
+    },
+    "version": "1.16.0",
+    "libraryName": "just-in-time-webpart",
+    "libraryId": "6bf920d0-d2ac-4844-a550-978dfbe4d426",
+    "environment": "spo",
+    "packageManager": "npm",
+    "solutionName": "JustInTimeWebpart",
+    "solutionShortDescription": "JustInTimeWebpart description",
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "componentType": "webpart"
+  }
+}

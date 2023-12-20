@@ -1,0 +1,40 @@
+{
+  "$schema": "https://developer.microsoft.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "just-in-time-webpart-client-side-solution",
+    "id": "6bf920d0-d2ac-4844-a550-978dfbe4d426",
+    "version": "1.0.0.0",
+    "includeClientSideAssets": true,
+    "skipFeatureDeployment": true,
+    "isDomainIsolated": false,
+    "developer": {
+      "name": "",
+      "websiteUrl": "",
+      "privacyUrl": "",
+      "termsOfUseUrl": "",
+      "mpnId": "Undefined-1.16.0"
+    },
+    "metadata": {
+      "shortDescription": {
+        "default": "JustInTimeWebpart description"
+      },
+      "longDescription": {
+        "default": "JustInTimeWebpart description"
+      },
+      "screenshotPaths": [],
+      "videoUrl": "",
+      "categories": []
+    },
+    "features": [
+      {
+        "title": "just-in-time-webpart Feature",
+        "description": "The feature that activates elements of the just-in-time-webpart solution.",
+        "id": "097f7153-45d5-4ac5-985e-6821c33248fe",
+        "version": "1.0.0.0"
+      }
+    ]
+  },
+  "paths": {
+    "zippedPackage": "solution/just-in-time-webpart.sppkg"
+  }
+}
