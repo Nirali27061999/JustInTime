@@ -7,7 +7,7 @@ import { SPComponentLoader } from "@microsoft/sp-loader";
 import { PeoplePicker, PrincipalType } from '@pnp/spfx-controls-react/lib/PeoplePicker';
 // import { sp } from "@pnp/sp/presets/all";
 import { SPFx, spfi } from "@pnp/sp";
-
+import { NumericFormat } from 'react-number-format';
 import "@pnp/sp/webs";
 import "@pnp/sp/lists";
 import "@pnp/sp/items";
@@ -43,6 +43,8 @@ export default class SiteCollectionForList extends React.Component<IJustInTimeWe
             approvalOptions: [],
             selectedApprovalKey: '',
             reason:'',
+            RevokeDays: 0,
+            dialogSubText : '',
             // isadddate:false,
             // isremovedate:false,
 
@@ -56,6 +58,7 @@ export default class SiteCollectionForList extends React.Component<IJustInTimeWe
             reasonErrorMessage: '',
             isDialogVisible: false, // New state variable for the dialog
             isSpinnerLoader: false,
+            
 
         };
     }
@@ -133,6 +136,7 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
                 const selectedGroupData = groups.find((group: any) => group.Title === selectedGroup);
                 const groupIdoptions = selectedGroupData ? [{ key: selectedGroupData.Id, text: selectedGroupData.Id }] : [];
                 this.setState({ groupIdoptions });
+                console.log(data,"loadedgroupdata");
             } else {
                 console.error("Failed to fetch site groups:", data.error);
             }
@@ -172,73 +176,86 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
     };
 
 
+    public numberFormatTextChangeEvent = (controlName: string, e: any) => {
+        const { floatValue, formattedValue } = e;
+        if (floatValue !== undefined) {
+            this.setState({ RevokeDays : floatValue });
+          }
+      }
+
+
     saveData = async () => {
         // const { siteUrl, groupName, userName, addDate, removeDate, selectedApprovalKey, ApprovalUser } = this.state;
-        const { siteUrl, groupName, userName, addDate, removeDate, ApprovalUser,reason,removeDate1 } = this.state;
+        const { siteUrl, groupName, userName, addDate, removeDate, ApprovalUser,reason,removeDate1,RevokeDays,dialogSubText } = this.state;
+        console.log(this.state.ApprovalUser,"AppUser");
         this.setState({ isSpinnerLoader: true });
         // For Validation
 
         let isFormValid = true;
 
         if (!siteUrl) {
-            this.setState({ siteUrlErrorMessage: 'SiteURL Is Required' });
+            this.setState({ siteUrlErrorMessage: 'Site URL is Required' });
             isFormValid = false;
         } else {
             this.setState({ siteUrlErrorMessage: '' });
         }
 
         if (!groupName) {
-            this.setState({ groupNameErrorMessage: 'GroupName Is Required' });
+            this.setState({ groupNameErrorMessage: 'Group Name is Required' });
             isFormValid = false;
         } else {
             this.setState({ groupNameErrorMessage: '' });
         }
 
         if (!userName) {
-            this.setState({ userNameErrorMessage: 'UserName Is Required' });
+            this.setState({ userNameErrorMessage: 'User Name is Required' });
             isFormValid = false;
         } else {
             this.setState({ userNameErrorMessage: '' });
         }
 
         if (!ApprovalUser) {
-            this.setState({ ApprovalUserErrorMessage: 'ApproverUser Is Required' });
+            this.setState({ ApprovalUserErrorMessage: 'Approver Name is Required' });
             isFormValid = false;
         } else {
             this.setState({ ApprovalUserErrorMessage: '' });
+            if(ApprovalUser[0].secondaryText !== this.props.context.pageContext.user.email)
+        {
+            this.setState({ dialogSubText: 'Permission will be assigned after approval' });
+            if (!reason) {
+                this.setState({ reasonErrorMessage: 'Remarks is Required' });
+                isFormValid = false;
+            } else {
+                this.setState({ reasonErrorMessage: '' });
+            }
         }
-
-        if (!addDate) {
-            this.setState({ addDateErrorMessage: 'AddDate Is Required' });
+        else{
+            this.setState({ dialogSubText: 'Permission is assigned to this user sucessfully' });
+        }
+        }
+        
+        if (!RevokeDays) {
+            this.setState({ removeDateErrorMessage: 'Revoke Days is Required' });
             isFormValid = false;
         } else {
-            this.setState({ addDateErrorMessage: '' });
+            if(RevokeDays > 30)
+            {
+                this.setState({ removeDateErrorMessage: 'Revoke Days should not be greater then 30' });
+                isFormValid = false;
+            }
+            else{
+                this.setState({ removeDateErrorMessage: '' });
+            }
+           
         }
-
-        if (!removeDate1) {
-            this.setState({ removeDateErrorMessage: 'ExpiryDate Is Required' });
-            isFormValid = false;
-        } else {
-            this.setState({ removeDateErrorMessage: '' });
-        }
-
-        if (!reason) {
-            this.setState({ reasonErrorMessage: 'Remarks Is Required' });
-            isFormValid = false;
-        } else {
-            this.setState({ reasonErrorMessage: '' });
-        }
+        
+        
  
         if (!isFormValid) {
             this.setState({ isSpinnerLoader: false });
             return;
         }
-        if ( !addDate || !removeDate ) {
-          // alert("Please fill out all the required fields.");
-          this.setState({isadddate : true,isremovedate:true});
-          this.setState({ isSpinnerLoader: false });
-          return;
-      }
+       
         const sp = spfi().using(SPFx(this.props.context));
         // const ad=  moment(addDate).utc().format('DD-MM-YYYY');
         // const rd=  moment(removeDate).utc().format('DD-MM-YYYY');
@@ -261,11 +278,11 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
             'GroupName': groupName,
             'UserNameId': userName[0].id,
             'AddDate': addDate.toISOString(),
-            'RemoveDate': removeDate.toISOString(),
+         
             'GroupId': a.toString(),
             // 'Approval': this.state.approvalOptions[parseInt(selectedApprovalKey)].text, // Assuming selectedApprovalKey is the index of the selected option,
             'ApprovalUserId': ApprovalUser[0].id,
-            'Expires': daysDifference.toString(),
+            'Expires': RevokeDays.toString(),
             'Reason':reason
         });
         // alert("Data Insert Successfull");
@@ -346,173 +363,11 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
 
     render() {
       // const { siteUrl, groupName, userName, addDate, removeDate, ApprovalUser, reason } = this.state;
-      const {   siteUrlErrorMessage, groupNameErrorMessage, userNameErrorMessage,ApprovalUserErrorMessage,reasonErrorMessage,addDateErrorMessage,removeDateErrorMessage} = this.state;
+      const {   siteUrlErrorMessage, groupNameErrorMessage, userNameErrorMessage,ApprovalUserErrorMessage,reasonErrorMessage,addDateErrorMessage,removeDateErrorMessage,dialogSubText} = this.state;
       const minDate = new Date();
    const nextdays:any= minDate.setDate(minDate.getDate() + 1);
         return (
-//             <div className="custom-form-container">
-//                 {/* <Dropdown
-//                     label="Site URL"
-//                     options={this.state.siteUrlOptions}
-//                     selectedKey={this.state.siteUrl}
-//                     onChange={async (e, option) => {
-//                         await this.setState({ siteUrl: option.key });
-//                         await this.loadGroupNames(option.key);
-//                     }}
-//                 /> */}
-//                 <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
-//                 <h1>Just In Time Access Control</h1>
-//                 </div>
 
-//                 <div className="ms-Grid-col ms-sm12 ms-md6 ms-lg6">
-//                 <Dropdown
-//                     label="Site URL"
-//                     options={this.state.siteUrlOptions}
-//                     selectedKey={this.state.siteUrl}
-//                     onChange={async (e, option) => {
-//                         if (option) {
-//                             const selectedKey = option.key.toString(); // Convert the key to a string
-//                             await this.setState({ siteUrl: selectedKey });
-//                             await this.loadGroupNames(selectedKey);
-//                         }
-//                     }}
-//                     // errorMessage={siteUrl ? '' : 'This field is required.'}
-//                 />
-//   {siteUrlErrorMessage && <span style={{ color: 'red' }}>{siteUrlErrorMessage}</span>}
-//                 {/* <Dropdown
-//                     label="Group Name"
-//                     options={this.state.groupNameOptions}
-//                     selectedKey={this.state.groupName}
-//                     onChange={(e, option) => this.setState({ groupName: option.key })}
-//                 /> */}
-
-//                 <Dropdown
-//                     label="Group Name"
-//                     options={this.state.groupNameOptions}
-//                     selectedKey={this.state.groupName}
-//                     onChange={(e, option) => {
-//                         if (option) {
-//                             this.setState({ groupName: option.key as string }, () => {
-//                                 const selectedKey = this.state.siteUrl.toString(); // Assuming siteUrl is a string
-//                                 this.loadGroupNames(selectedKey);
-//                             });
-//                         }
-//                     }}
-//                     // errorMessage={groupName ? '' : 'This field is required.'}
-//                 />
-//               {groupNameErrorMessage && <span style={{ color: 'red' }}>{groupNameErrorMessage}</span>}
-//                 {/* <Dropdown
-//                     label="Group Id"
-//                     options={this.state.groupIdoptions}
-//                     selectedKey={this.state.groupID}
-//                     onChange={(e, option) => this.setState({ groupID: option.key })}
-                  
-//                 /> */}
-
-//                 {/* <Dropdown
-//                     label="Approval"
-//                     options={this.state.approvalOptions}
-//                     selectedKey={this.state.selectedApprovalKey}
-//                     onChange={(e, option) => this.setState({ selectedApprovalKey: option ? option.key : undefined })}
-//                 /> */}
-//                 <PeoplePicker
-//                     context={this.props.context}
-//                     titleText="User Name"
-//                     personSelectionLimit={1}
-//                     showHiddenInUI={false}
-//                     ensureUser={true}
-//                     onChange={items => {
-//                         this.setState({ userName: items });
-//                     }}
-//                     defaultSelectedUsers={this.state.userName}
-//                     showtooltip={true}
-//                     principalTypes={[PrincipalType.User]}
-//                     // errorMessage={userName ? '' : 'This field is required.'}
-//                 // required={true}
-//                 />
-//  {userNameErrorMessage && <span style={{ color: 'red' }}>{userNameErrorMessage}</span>}
-//                 <PeoplePicker
-//                     context={this.props.context}
-//                     titleText="Approval User Name"
-//                     personSelectionLimit={1}
-//                     showHiddenInUI={false}
-//                     ensureUser={true}
-//                     onChange={items => {
-//                         this.setState({ ApprovalUser: items });
-//                     }}
-//                     defaultSelectedUsers={this.state.ApprovalUser}
-//                     showtooltip={true}
-//                     principalTypes={[PrincipalType.User]}
-//                     // errorMessage={ApprovalUser ? '' : 'This field is required.'}
-//                 />
-//                   {ApprovalUserErrorMessage && <span style={{ color: 'red' }}>{ApprovalUserErrorMessage}</span>}
-
-//                 {/* <DatePicker
-//                     label="Add Date"
-//                     onSelectDate={(date) => this.setState({ addDate: date })}
-//                 />
-
-//                 <DatePicker
-//                     label="Remove Date"
-//                     onSelectDate={(date1) => this.setState({ removeDate: date1 })}
-//                 /> */}
-
-//                 <DatePicker
-//                     label="Start Date"
-//                     onSelectDate={this.handleAddDateChange}
-//                     value={this.state.addDate}
-//                     isRequired={true}
-                   
-                    
-//                 />
-// {/* {this.state.isadddate ? <span style={{color:'red'}}>This field is required *</span>: ""} */}
-// {addDateErrorMessage && <span style={{ color: 'red' }}>{addDateErrorMessage}</span>}
-//                 <DatePicker
-//                     label="Expire Date"
-//                     onSelectDate={this.handleRemoveDateChange}
-//                     value={this.state.removeDate}
-//                     isRequired={true}
-                  
-//                 />
-//                 {/* {this.state.isremovedate ? <span style={{color:'red'}}>This field is required *</span>: ""} */}
-//                 {removeDateErrorMessage && <span style={{ color: 'red' }}>{removeDateErrorMessage}</span>}
-//             <TextField
-//   label="Reason"
-//   value={this.state.reason}
-//   onChange={(event, newValue) => this.setState({ reason: newValue })}
-//   // errorMessage={reason ? '' : 'This field is required.'}
-//   multiline rows={3}
-// />
-// {reasonErrorMessage && <span style={{ color: 'red' }}>{reasonErrorMessage}</span>}
-
-//                 </div>
-
-//                 <div className="buttonWrapper">
-//                     <PrimaryButton text="Save" onClick={this.saveData}  />
-//                     <DefaultButton text="Cancel" onClick={this.resetForm} />
-
-//                     {/* Add the following code for the dialog */}
-//                 {this.state.isDialogVisible && (
-//                     <Dialog
-//                         hidden={!this.state.isDialogVisible}
-//                         onDismiss={this.dismissDialog}
-//                         dialogContentProps={{
-//                             type: DialogType.normal,
-//                             title: 'Success',
-//                             subText: 'Data Insert Successful',
-//                         }}
-//                         modalProps={{
-//                             isBlocking: true,
-//                             styles: { main: { maxWidth: 450 } },
-//                         }}
-//                     >
-//                        <DialogFooter>
-//             <PrimaryButton onClick={this.dismissDialog} text="OK" />
-//         </DialogFooter>
-//                     </Dialog>
-//                 )}
-//                 </div>
-//             </div>
 <>
 {this.state.isSpinnerLoader ?
     <div className={styles.overlay}>
@@ -579,7 +434,7 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
                 personSelectionLimit={1}
                 showHiddenInUI={false}
                 ensureUser={true}
-                onChange={items => {
+                onChange={(items: any) => {
                     this.setState({ userName: items });
                 }}
                 defaultSelectedUsers={this.state.userName}
@@ -594,14 +449,14 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
     {/* Approval user name */}
     <div className="ms-Grid-col ms-sm12 ms-md6 ms-lg6">
         <div className={`${styles.formControl} customArea`}>
-            <Label className='customLabel'>Approver User Name<span style={{ color: 'red' }}> * </span></Label>
+            <Label className='customLabel'>Approver Name<span style={{ color: 'red' }}> * </span></Label>
             <PeoplePicker
                 context={this.props.context}
                 //titleText="Approval User Name"
                 personSelectionLimit={1}
                 showHiddenInUI={false}
                 ensureUser={true}
-                onChange={items => {
+                onChange={(items: any) => {
                     this.setState({ ApprovalUser: items });
                 }}
                 defaultSelectedUsers={this.state.ApprovalUser}
@@ -613,10 +468,11 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
  {ApprovalUserErrorMessage && <span style={{ color: 'red' }}>{ApprovalUserErrorMessage}</span>}
         </div>
     </div>
+    
     {/* Start Date */}
     <div className="ms-Grid-col ms-sm12 ms-md6 ms-lg6">
         <div className={`customControl ${styles.formControl}`}>
-            <Label className='customLabel'>Start Date<span style={{ color: 'red' }}> * </span></Label>
+            <Label className='customLabel'>Start Date</Label>
             {/* <DatePicker
                 onSelectDate={this.handleAddDateChange}
                 value={this.state.addDate}                                  
@@ -629,11 +485,12 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
             {/* {addDateErrorMessage && <span style={{ color: 'red' }}>{addDateErrorMessage}</span>} */}
         </div>
     </div>
+   
     {/* Expire Date */}
     <div className="ms-Grid-col ms-sm12 ms-md6 ms-lg6">
         <div className={`customControl ${styles.formControl}`}>
-            <Label className='customLabel'>Expiry Date<span style={{ color: 'red' }}> *</span></Label>
-            <DatePicker
+            <Label className='customLabel'>Revoke Days<span style={{ color: 'red' }}> *</span></Label>
+            {/* <DatePicker
                 //label="Expire Date"
                 onSelectDate={this.handleRemoveDateChange}
                 value={this.state.removeDate1}
@@ -643,12 +500,25 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
 
             //errorMessage={reason ? '' : 'This field is required.'}
 
-            />
+            /> */}
+
+<NumericFormat 
+                          id='txtRevokeDays'
+                          className='number-format'
+                          
+                          //disabled={this.state.isDisplayMode || !this.state.enablestatus || this.state.editDisableForDeclinePending || this.state.departmentdisbalestatus}
+                          value={this.state.RevokeDays}
+                          onValueChange={(e: any) =>
+                            this.numberFormatTextChangeEvent("txtRevokeDays", e)
+                          }
+                        />
               {removeDateErrorMessage && <span style={{ color: 'red' }}>{removeDateErrorMessage}</span>}
         </div>
     </div>
+    <div className="ms-Grid-col ms-sm12 ms-md6 ms-lg6"></div>
     {/* Reason */}
     <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
+    {this.state.ApprovalUser && this.state.ApprovalUser.length > 0 && this.state.ApprovalUser[0].secondaryText !== this.props.context.pageContext.user.email ?
         <div className={`${styles.formControl} customArea`}>
             <Label className='customLabel'>Remarks<span style={{ color: 'red' }}> *</span> </Label>
             <TextField
@@ -660,13 +530,15 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
             />
 {reasonErrorMessage && <span style={{ color: 'red' }}>{reasonErrorMessage}</span>}
         </div>
+    
+    : undefined }
     </div>
 
 </div>
 
 
 <div className={`customButton ${styles.formButton}`}>
-    <PrimaryButton text="Save" onClick={this.saveData} />
+    <PrimaryButton text="Submit" onClick={this.saveData} />
     <PrimaryButton text="Cancel" onClick={this.resetForm} />
 
     {this.state.isDialogVisible && (
@@ -676,7 +548,8 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
                         dialogContentProps={{
                             type: DialogType.normal,
                             title: 'Success',
-                            subText: 'Permission is assigned to this user sucessfully',
+                            subText : dialogSubText
+                           // subText: 'Permission is assigned to this user sucessfully',
                         }}
                         modalProps={{
                             isBlocking: true,
