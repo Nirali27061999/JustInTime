@@ -214,7 +214,7 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
             this.setState({ userNameErrorMessage: '' });
         }
 
-        if (!ApprovalUser) {
+        if (ApprovalUser.length === 0) {
             this.setState({ ApprovalUserErrorMessage: 'Approver Name is Required' });
             isFormValid = false;
         } else {
@@ -300,7 +300,7 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
         this.setState({
             siteUrl: '',
             groupName: '',
-            addDate: null,
+            addDate: new Date(),
             removeDate: null,
             groupID: '',
             selectedApprovalKey: '', // Reset selectedApprovalKey
@@ -326,6 +326,14 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
     handleAddDateChange = (date: Date | null | undefined): void => {
          this.setState({ addDate: date });
     };
+
+    handleApproverNameChange = (items: any) => {
+        // Update state for the first control
+        this.setState({ ApprovalUser: items });
+    
+        // Reset the value in the second control
+        this.setState({ reason: null });
+      }
 
     handleRemoveDateChange = (date: Date | null | undefined): void => {
         const selectedDate = moment(date);
@@ -459,6 +467,7 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
                 onChange={(items: any) => {
                     this.setState({ ApprovalUser: items });
                 }}
+                //onChange={this.handleApproverNameChange} 
                 defaultSelectedUsers={this.state.ApprovalUser}
                 showtooltip={true}
                 principalTypes={[PrincipalType.User]}
@@ -518,7 +527,7 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
     <div className="ms-Grid-col ms-sm12 ms-md6 ms-lg6"></div>
     {/* Reason */}
     <div className="ms-Grid-col ms-sm12 ms-md12 ms-lg12">
-    {this.state.ApprovalUser && this.state.ApprovalUser.length > 0 && this.state.ApprovalUser[0].secondaryText !== this.props.context.pageContext.user.email ?
+    {/* {this.state.ApprovalUser && this.state.ApprovalUser.length > 0 && this.state.ApprovalUser[0].secondaryText !== this.props.context.pageContext.user.email ? */}
         <div className={`${styles.formControl} customArea`}>
             <Label className='customLabel'>Remarks<span style={{ color: 'red' }}> *</span> </Label>
             <TextField
@@ -527,11 +536,12 @@ const rootSiteUrl = `${urlObject.protocol}//${urlObject.hostname}`;
                 onChange={(event, newValue) => this.setState({ reason: newValue })}
                 // errorMessage={this.state.isremovedate && reason ? '' : 'This field is required.'}
                 multiline rows={3}
+                disabled={this.state.ApprovalUser && this.state.ApprovalUser.length > 0 && this.state.ApprovalUser[0].secondaryText === this.props.context.pageContext.user.email}
             />
 {reasonErrorMessage && <span style={{ color: 'red' }}>{reasonErrorMessage}</span>}
         </div>
     
-    : undefined }
+    {/* : undefined } */}
     </div>
 
 </div>
